@@ -17,16 +17,16 @@
                     @forelse ($posts as $post)
                         <div class="card">
                             <div class="card-body">
-                                <img src="{{ $post->thumbnail() }}" alt="">
-                                <h5 class="card-title">{{ $post->title }}</h5>
+                                <h5 class="card-title">{{ $post->title }} by {{ $post->user->username }}</h5>
                                 <p class="card-text">{{ $post->body }}</p>
-                                <a href="#" class="btn btn-primary">Read More</a>
+                                <a href="{{ route('posts.show', $post->slug) }}" class="btn btn-primary">Read More</a>
                             </div>
                         </div>
                     @empty
                         <p>No posts yet.</p>
                     @endforelse
                 </div>
+                {{ $posts->links() }}
             </div>
         </div>
     </div>

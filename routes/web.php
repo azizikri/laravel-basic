@@ -26,17 +26,19 @@ Auth::routes();
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
-    Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
+    // Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
+    // Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
 
 
-    Route::get('/posts/edit', function(){
-        return view('posts.edit');
-    })->name('posts.edit');
+    // Route::get('/posts/{post:slug}/edit', [PostController::class, 'edit'])->name('posts.edit');
 
-    Route::get('/posts/show', function(){
-        return view('posts.show');
-    })->name('posts.show');
+    // Route::get('/posts/{post:slug}', [PostController::class, 'show'])->name('posts.show');
+    // Route::patch('/posts/{post:slug}/update', [PostController::class, 'update'])->name('posts.update');
+    // Route::delete('/posts/{post:slug}/delete', [PostController::class, 'destroy'])->name('posts.destroy');
+
+    Route::resource('posts', PostController::class)->except('index');
+
+
 });
 
 

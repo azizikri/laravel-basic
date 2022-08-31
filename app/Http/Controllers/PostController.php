@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PostRequest;
 use App\Models\Post;
-use Illuminate\Http\Request;
+use App\Services\PostServices;
 
 class PostController extends Controller
 {
@@ -11,21 +12,42 @@ class PostController extends Controller
         return view('posts.create');
     }
 
-    public function store(Request $request){
-
-        $data = $request->validate([
-            'title' => ['required', 'max:255'],
-            'content' => ['required'],
-            'thumbnail' => ['required', 'image', 'mimes:jpeg,png,jpg,gif,svg'],
-        ]);
-
-        $data['user_id'] = auth()->id();
-        $data['slug'] = str()->slug($data['title']);
-
-        $thumbnail = $request->file('thumbnail')->store('thumbnails/post');
-        $data['thumbnail'] = $thumbnail;
-        $post = Post::create($data);
+    public function store(PostRequest $request, PostServices $postServices)
+    {
+        $postServices->handleStore($request);
 
         return redirect()->route('home');
+    }
+
+    public function show(Post $post){
+        return view('posts.show',[
+            'post' => $post,
+        ]);
+    }
+
+    public function edit(Post $post)
+    {
+        $this->authorize('owner', $post);
+
+        return view('posts.edit',[
+            'post' => $post,
+        ]);
+    }
+
+    public function update(PostRequest $request, Post $post, PostServices $postServices)
+    {
+        $this->authorize('owner', $post);
+
+        $postServices->handleUpdate($request, $post);
+
+        return redirect()->route('posts.show', $post->slug);
+    }
+
+    public function destroy(Post $post, PostServices $postServices){
+        $this->authorize('owner', $post);
+
+        $postServices->handleDestroy($post);
+
+        return redirect()->route('users.profile', auth()->user()->username);
     }
 }

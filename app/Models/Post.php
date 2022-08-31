@@ -22,4 +22,9 @@ class Post extends Model
     {
         return Storage::url($this->thumbnail);
     }
+
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
 }
